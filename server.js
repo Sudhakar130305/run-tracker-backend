@@ -1,43 +1,46 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const runRoutes = require('./routes/run');
-const statsRoutes = require('./routes/stats'); // ✅ Add this line
 const cors = require('cors');
 const path = require('path');
 
+// Load environment variables
 dotenv.config();
 
+// Initialize app
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// API Routes
+const authRoutes = require('./routes/auth');
+const runRoutes = require('./routes/run');
+const statsRoutes = require('./routes/stats');
+
 app.use('/api/auth', authRoutes);
 app.use('/api/runs', runRoutes);
-app.use('/api/stats', statsRoutes); // ✅ Register the stats route here
+app.use('/api/stats', statsRoutes);
 
-// Serve static files from the frontend folder (client/frontend)
+// Serve static frontend files
 app.use(express.static(path.join(__dirname, 'client/frontend')));
 
-// Root route
+// Root route → serve index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/frontend/index.html'));
 });
 
-// Fallback for other routes (404 page)
+// Fallback for unknown routes → serve 404.html if exists
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'client/frontend/404.html'));
 });
 
-// MongoDB connection with updated timeout
+// MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
+  serverSelectionTimeoutMS: 30000, // 30 sec timeout
 })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
