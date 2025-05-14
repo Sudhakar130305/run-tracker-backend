@@ -20,23 +20,24 @@ app.use('/api/auth', authRoutes);
 app.use('/api/runs', runRoutes);
 app.use('/api/stats', statsRoutes); // ✅ Register the stats route here
 
-// Serve static files from the frontend folder
-app.use(express.static(path.join(__dirname, '../client/frontend')));
+// Serve static files from the frontend folder (client/frontend)
+app.use(express.static(path.join(__dirname, 'client/frontend')));
 
 // Root route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/frontend/index.html'));
+  res.sendFile(path.join(__dirname, 'client/frontend/index.html'));
 });
 
 // Fallback for other routes (404 page)
 app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, '../client/frontend/404.html'));
+  res.status(404).sendFile(path.join(__dirname, 'client/frontend/404.html'));
 });
 
-// MongoDB connection
+// MongoDB connection with updated timeout
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
 })
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
