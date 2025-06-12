@@ -13,7 +13,7 @@ This is a simple full-stack web application that helps users track their running
 
 ## 📸 Screenshot
 
-![Dashboard Screenshot](./Screenshot%202025-06-12%20170558.png)
+![Dashboard Screenshot](client/frontend/assets/dashboard.png)
 
 ## 🛠️ Tech Stack
 
